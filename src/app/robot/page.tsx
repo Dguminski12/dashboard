@@ -1,10 +1,66 @@
 "use client";
 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
 export default function RobotPage() {
 
   const [lastCommand, setLastCommand] = useState("");
+  
+  useEffect(() => {
+    const keydownHandler = (event: KeyboardEvent) => {
+        
+        if (event.repeat) return;
+      switch(event.key.toLowerCase()) {
+        case "w":
+            setLastCommand("forward");
+            break;
+        case "s":
+            setLastCommand("reverse");
+            break;
+        case "a":
+            setLastCommand("left");
+            break;
+        case "d":
+            setLastCommand("right");
+            break;
+        case " ":
+            setLastCommand("stop");
+            break;
+      };
+    };
+
+    window.addEventListener("keydown", keydownHandler);
+    return () => {
+      window.removeEventListener("keydown", keydownHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    const keyupHandler = (event: KeyboardEvent) => {
+        switch(event.key.toLowerCase()) {
+            case "w":
+                setLastCommand("stop");
+                break;
+            case "s":
+                setLastCommand("stop");
+                break;
+            case "a":
+                setLastCommand("stop");
+                break;
+            case "d":
+                setLastCommand("stop");
+                break;
+            case " ":
+                setLastCommand("stop");
+                break;
+        };
+    };
+
+    window.addEventListener("keyup", keyupHandler);
+    return () => {
+      window.removeEventListener("keyup", keyupHandler);
+    };
+  }, []);
     
   return (
     <div>
