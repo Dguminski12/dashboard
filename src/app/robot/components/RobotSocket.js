@@ -9,7 +9,7 @@ export default function RobotSocket() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080"); // ← replace with YOUR Pi IP
+    const ws = new WebSocket("ws://100.107.139.40:8080"); // ← replace with YOUR Pi IP
 
     ws.onopen = () => {
       console.log("Connected to Pi");
