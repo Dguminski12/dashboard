@@ -42,11 +42,11 @@ export default function RobotPage() {
       }
 
       else if (pressed.current.has("a")) {
-        setLastCommand("left");
+        setLastCommand("left_full");
       }
 
       else if (pressed.current.has("d")) {
-        setLastCommand("right");
+        setLastCommand("right_full");
       }
 
     };
