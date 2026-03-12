@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function RobotSocket() {
+export default function RobotSocket({ command }) {
   const [socket, setSocket] = useState(null);
   const [status, setStatus] = useState("Disconnected");
   const [message, setMessage] = useState("");
@@ -35,6 +35,16 @@ export default function RobotSocket() {
 
     return () => ws.close();
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    if (socket.readyState !== WebSocket.OPEN) return;
+    if (!command) return;
+
+    console.log("Sending command:", command);
+    socket.send(command);
+
+  }, [command]);
 
   const sendMessage = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {

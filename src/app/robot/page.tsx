@@ -85,7 +85,7 @@ export default function RobotPage() {
           <p className="text-slate-400 text-lg">
             Use WASD keys or buttons to control the robot
           </p>
-          <RobotSocket />
+          <RobotSocket command={lastCommand} />
         </div>
 
         {/* Command Display */}
