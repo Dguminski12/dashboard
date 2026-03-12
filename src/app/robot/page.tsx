@@ -1,70 +1,81 @@
 
 "use client";
 import RobotSocket from "./components/RobotSocket"
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 
 export default function RobotPage() {
 
   const [lastCommand, setLastCommand] = useState("");
-  
+  const pressed = useRef(new Set());
+
   useEffect(() => {
+
     const keydownHandler = (event: KeyboardEvent) => {
-        
-        if (event.repeat) return;
-      switch(event.key.toLowerCase()) {
-        case "w":
-            setLastCommand("forward");
-            break;
-        case "s":
-            setLastCommand("reverse");
-            break;
-        case "a":
-            setLastCommand("left");
-            break;
-        case "d":
-            setLastCommand("right");
-            break;
-        case " ":
-            setLastCommand("stop");
-            break;
-      };
+
+      if (event.repeat) return;
+
+      const key = event.key.toLowerCase();
+      pressed.current.add(key);
+
+      if (pressed.current.has("w") && pressed.current.has("d")) {
+        setLastCommand("forward_right");
+      }
+
+      else if (pressed.current.has("w") && pressed.current.has("a")) {
+        setLastCommand("forward_left");
+      }
+
+      else if (pressed.current.has("s") && pressed.current.has("d")) {
+        setLastCommand("backward_right");
+      }
+
+      else if (pressed.current.has("s") && pressed.current.has("a")) {
+        setLastCommand("backward_left");
+      }
+
+      else if (pressed.current.has("w")) {
+        setLastCommand("forward");
+      }
+
+      else if (pressed.current.has("s")) {
+        setLastCommand("backward");
+      }
+
+      else if (pressed.current.has("a")) {
+        setLastCommand("left");
+      }
+
+      else if (pressed.current.has("d")) {
+        setLastCommand("right");
+      }
+
     };
 
-    window.addEventListener("keydown", keydownHandler);
-    return () => {
-      window.removeEventListener("keydown", keydownHandler);
-    };
-  }, []);
 
-  useEffect(() => {
-    const keyupHandler = (event: KeyboardEvent) => {
-        switch(event.key.toLowerCase()) {
-            case "w":
-                setLastCommand("stop");
-                break;
-            case "s":
-                setLastCommand("stop");
-                break;
-            case "a":
-                setLastCommand("stop");
-                break;
-            case "d":
-                setLastCommand("stop");
-                break;
-            case " ":
-                setLastCommand("stop");
-                break;
-        };
-    };
+  const keyupHandler = (event: KeyboardEvent) => {
 
-    window.addEventListener("keyup", keyupHandler);
-    return () => {
-      window.removeEventListener("keyup", keyupHandler);
-    };
-  }, []);
+    const key = event.key.toLowerCase();
+    pressed.current.delete(key);
+
+    if (pressed.current.size === 0) {
+      setLastCommand("stop");
+    }
+
+  };
+
+
+  window.addEventListener("keydown", keydownHandler);
+  window.addEventListener("keyup", keyupHandler);
+
+  return () => {
+    window.removeEventListener("keydown", keydownHandler);
+    window.removeEventListener("keyup", keyupHandler);
+  };
+
+}, []);
     
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center p-8">
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-12">
